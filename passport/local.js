@@ -10,9 +10,9 @@ module.exports = () => {
     }, async (email, password, done) => {
         try {
             const user = await User.findOne({
-                where : {email}
+                where : { email }
             });
-            if (!User) {
+            if (!user) {
                 return done(null, false, {reason: '존재하지 않는 이메일 입니다!'});
             }
             const result = await bcrypt.compare(password, user.password);
