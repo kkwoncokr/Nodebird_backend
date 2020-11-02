@@ -28,41 +28,37 @@ router.post('/', isNotLoggedIn, async (req,res,next)=> {
     }
 })
 
-router.post('/login', isNotLoggedIn, (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
+  router.post('/login',isNotLoggedIn, (req,res,next) => {
+    passport.authenticate('local', (err,user,info) => {
       if (err) {
         console.error(err);
         return next(err);
       }
-      if (info) {
-        return res.status(401).send(info.reason);
+      if(info) {
+        return res.status(401).json(info.reason);
       }
       return req.login(user, async (loginErr) => {
-        if (loginErr) {
-          console.error(loginErr);
+          if(loginErr) {
           return next(loginErr);
         }
-        const fullUserWithoutPassword = await User.findOne({
-          where: { id: user.id },
+        const fullUserWithoutPassword = await User.findOne({ // 비밀번호 제외, db에서 없는 것들 불러오기
+          where : { id :user.id },
           attributes: {
-            exclude: ['password']
-          },
+            exclude: ['password'] // 비밀번호 제외 가져오겠다.
+          },  
           include: [{
-            model: Post,
-            attributes: ['id'],
-          }, {
-            model: User,
+            model:Post,
+          },{
+            model:User,
             as: 'Followings',
-            attributes: ['id'],
           }, {
-            model: User,
-            as: 'Followers',
-            attributes: ['id'],
+            model:User,
+            as: 'Followers'
           }]
         })
         return res.status(200).json(fullUserWithoutPassword);
-      });
-    })(req, res, next);
+      })
+    })(req,res,next);
   });
   router.post('/logout', isLoggedIn, (req, res) => {
     req.logout();
