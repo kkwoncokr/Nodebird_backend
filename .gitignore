@@ -3,7 +3,7 @@
 npm-debug.log
 yarn-error.log
 /config
-
+.env
 # Editor
 .vscode
 .DS_Store

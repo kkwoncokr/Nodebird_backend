@@ -1,22 +1,40 @@
 const express = require('express');
-const { Post } = require('../models');
+const { Post, User, Image, Comment } = require('../models');
 const {isLoggedIn} = require('./middlewares')
 
 
 const router = express.Router();
-router.post('/', async (req,res,next) => {
+router.post('/', isLoggedIn, async (req,res,next) => {
     try {
        const post = await Post.create({
             content: req.body.content,
             UserId: req.user.id,
         });
-       res.status(201).json(post)
-    } catch (error) {
-        console.error(error);
-        next(error);
-    }
-});
-
+        const fullPost = await Post.findOne({
+            where: { id: post.id },
+            include: [{
+              model: Image,
+            }, {
+              model: Comment,
+              include: [{
+                model: User, // 댓글 작성자
+                attributes: ['id', 'nickname'],
+              }],
+            }, {
+              model: User, // 게시글 작성자
+              attributes: ['id', 'nickname'],
+            }, {
+              model: User, // 좋아요 누른 사람
+              as: 'Likers',
+              attributes: ['id'],
+            }]
+          })
+          res.status(201).json(fullPost);
+        } catch (error) {
+          console.error(error);
+          next(error);
+        }
+    });
 router.post('/:postId/comment', async (req,res,next) => {
     try {
        const post = await Post.findOne ({
@@ -35,7 +53,7 @@ router.post('/:postId/comment', async (req,res,next) => {
         console.error(error);
         next(error)
     }
-})
+});
 
 
 
