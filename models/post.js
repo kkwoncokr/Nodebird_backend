@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         db.Post.belongsTo(db.User); // 게시글은 유저에게 포함된다.
         db.Post.belongsToMany(db.Hashtag, {through: 'PostHashtag'});
         db.Post.hasMany(db.Comment);
-        db.User.hasMany(db.Image);
+        db.Post.hasMany(db.Image);
         db.Post.belongsTo(db.Post, {as : 'Retweet'}); // as는 별칭
         db.Post.belongsToMany(db.User, {through : 'Like', as:'Likers'}); // 사용자와 게시글에 좋아요 관계 through => 중간테이블 이름 바꾸기
     };
