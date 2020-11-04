@@ -35,7 +35,7 @@ router.post('/', isLoggedIn, async (req,res,next) => {
           next(error);
         }
     });
-router.post(`/:postId/comment`, async (req,res,next) => {
+router.post(`/:postId/comment`,isLoggedIn, async (req,res,next) => {
     try {
        const post = await Post.findOne ({
             where: {id: req.params.postId},
