@@ -77,7 +77,7 @@ router.delete('/comment/:commentId',isLoggedIn, async (req,res,next) => {
     next(error);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
   }
 })
-
+ 
 router.delete('/:postId',isLoggedIn, async (req,res,next) => {
   try {
     await Post.destroy({
