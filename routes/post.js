@@ -62,19 +62,21 @@ router.post('/:postId/comment',isLoggedIn, async (req,res,next) => {
     }
 });
 
-router.delete('/comment/:commentId',isLoggedIn, async (req,res,next) => {
-  try {
-    const comment = await Comment.destroy({
-      where : {
-        id: req.params.commentId,
-      }
-    })
- 
+router.post('/comment/:commentId',isLoggedIn, async (req,res,next) => {
 
-    res.status(200).json({id:parseInt(req.params.commentId,10)})
-  } catch (error) {
-    console.error(error);
-    next(error);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+  try {
+    const comment = await Comment.findOne({
+      where: {id:req.params.commentId}
+    
+    });
+    if(!comment) {
+      res.status(403).json('없는 댓글입니다..')
+    }
+    await comment.destroy({commentId: parseInt(req.params.commentId,10)})
+    res.status(200).json({commentId: parseInt(req.params.commentId,10),postId:req.body.postId})
+  }catch(err) {
+    console.error(err);
+    next(err)
   }
 })
  
