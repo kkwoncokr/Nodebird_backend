@@ -17,7 +17,6 @@ router.get('/', async (req,res,next) => { // GET /posts
                 attributes:['id','nickname'],
             },{
                 model:Image,
-                attributes:['id'],
             },{
                 model:User,
                 as: 'Likers',
