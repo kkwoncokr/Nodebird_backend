@@ -244,5 +244,28 @@ router.post('/:postId/retweet',isLoggedIn, async (req,res,next) => {
   }
 });
 
+router.patch('/update', isLoggedIn, async (req,res,next) => {
+  try {
+    await Post.update({
+      content: req.body.content,
+    },{
+      where: { id: req.body.postId }
+    });
+    const post = await Post.findOne({
+      where: { id: req.body.postId },
+      include: [{
+        model: Post,
+        as: 'Retweet',
+      }],
+    });
+    if(post.Retweet) {
+    return res.status(403).json('리트윗한 게시글은 수정할 수 없습니다.')
+    }
+    res.status(200).json({content:req.body.content,postId: req.body.postId})
+  }catch(err) {
+    console.error(err);
+    next(err)
+  }
+})
 
 module.exports = router;
