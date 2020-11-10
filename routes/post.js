@@ -258,8 +258,8 @@ router.patch('/update', isLoggedIn, async (req,res,next) => {
         as: 'Retweet',
       }],
     });
-    if(post.Retweet) {
-    return res.status(403).json('리트윗한 게시글은 수정할 수 없습니다.')
+    if (post.Retweet) {
+      return res.status(403).json('리트윗한 글은 수정할수 없습니다.');
     }
     res.status(200).json({content:req.body.content,postId: req.body.postId})
   }catch(err) {
